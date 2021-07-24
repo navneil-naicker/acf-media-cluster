@@ -1,4 +1,4 @@
-=== Advanced Custom Fields: FIELD_LABEL Field ===
+=== Advanced Custom Fields: ACF Media Cluster ===
 Contributors: Navneil Naicker
 Tags: acf, media, word, pdf, images, documents
 Requires at least: 3.6.0
