@@ -5,12 +5,12 @@
 
     $key = "";
 	if( !empty($_REQUEST['key']) ){
-		$key = $_REQUEST['key'];
+		$key = preg_replace("/[^a-z0-9_]/", "", $_REQUEST['key']);
 	} else if( !empty($pkey) ){
-		$key = $pkey;
+		$key = preg_replace("/[^a-z0-9_]/", "", $pkey);
 	}
-	$group = (!empty($_REQUEST['group']))?$_REQUEST['group']:'1';
-	$fname = (!empty($_REQUEST['fname']))?$_REQUEST['fname']:$fname;
+	$group = (!empty($_REQUEST['group']))?preg_replace("/[^0-9]/", "",$_REQUEST['group']):1;
+	$fname = (!empty($_REQUEST['fname']))?preg_replace("/[^a-z0-9_]/", "",$_REQUEST['fname']):$fname;
 	if( $groupIndex > 0 ){
 		$group = $groupIndex;
 	}

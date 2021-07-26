@@ -2,7 +2,6 @@
 
 /*
 Plugin Name: ACF Media Cluster
-Plugin URI: http://www.navz.me/
 Description: An extension for Advance Custom Fields which provides the ability to add multiple media into a post.
 Version: 1.0.0
 Author: Navneil Naicker
@@ -58,9 +57,9 @@ class acf_media_cluster {
 	function scripts() {
 		$settings = $this->settings;
 		$version = $settings['version'];
-		wp_register_style('css-acf-media-cluster', plugins_url('/assets/css/acf-media-cluster.css?v=' . $version, __FILE__ ));
+		wp_register_style('css-acf-media-cluster', plugins_url('/assets/css/acf-media-cluster.css', __FILE__), null, $version, null);
 		wp_enqueue_style('css-acf-media-cluster');
-		wp_register_script( 'js-acf-media-cluster', plugins_url('/assets/js/acf-media-cluster.js?v=' . $version, __FILE__ ), 'jquery', null, true);
+		wp_register_script( 'js-acf-media-cluster', plugins_url('/assets/js/acf-media-cluster.js', __FILE__ ), 'jquery', $version, true);
 		wp_enqueue_script('js-acf-media-cluster');
 	}
 	
@@ -132,18 +131,17 @@ function acf_mc_cluster_edit_fields(){
 add_action('wp_ajax_acf_mc_cluster_edit_fields', 'acf_mc_cluster_edit_fields');
 
 function acf_mc_cluster_edit_save_field(){
-	global $wp_error;
 	if( $_POST['action'] == 'acf_mc_cluster_edit_save_field' ){
 		global $wpdb;
 		$t = array();
 		$tables = json_decode(stripslashes($_POST['tables']), true);
-		$post_id = $_POST['post_id'];
-		$acf_mc_key = $_POST['acf-mc-field-key'];
+		$post_id = preg_replace('/\D/', '', $_POST['post_id']);
+		$acf_mc_key = preg_replace('/[^a-z0-9_]/', '', $_POST['acf-mc-field-key']);
 		foreach($tables as $a => $b){
 			if( !empty($t[$b]) ){
-				array_push($t[$b], $a);
+				array_push($t[esc_attr($b)], esc_attr($a));
 			} else {
-				$t[$b] = array($a);
+				$t[esc_attr($b)] = array($a);
 			}
 		}
 		if( !empty($t) ){
@@ -170,7 +168,7 @@ function acf_mc_cluster_edit_save_field(){
 					}
 				}
 			}
-			update_option('acf_mc_key_' . $acf_mc_key, json_encode($t) );
+			update_option('acf_mc_key_' . $acf_mc_key, wp_json_encode($t) );
 		}
 	}
 	die();
@@ -179,11 +177,11 @@ add_action('wp_ajax_acf_mc_cluster_edit_save_field', 'acf_mc_cluster_edit_save_f
 
 function acf_media_cluster($post_id, $field_name){
 	global $wpdb;
-	$field_key = get_field('_' . $field_name);
+	$field_key = get_field('_' . esc_attr($field_name));
 	$option = json_decode(get_option('acf_mc_key_' . $field_key));
-	$meta_attachment_ids = array_filter(explode(',', get_field($field_name, $post_id)));
+	$meta_attachment_ids = array_filter(explode(',', get_field($field_name, preg_replace('/\D/', '', $post_id))));
 	$posts = get_posts(array(
-		'post__in' => $meta_attachment_ids,
+		'post__in' => esc_attr($meta_attachment_ids),
 		'post_type' => 'attachment',
 		'orderby' => 'post__in',
 		'order' => 'ASC',

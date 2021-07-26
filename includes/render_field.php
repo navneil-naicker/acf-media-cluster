@@ -5,9 +5,6 @@
 
     $key = $field['key'];
     $fname = $field['_name'];
-    $show_in_screen = $field['show_in_screen'];
-    $minimum = $field['minimum'];
-    $maximum = $field['maximum'];
     $acf_mc_attachment_ids = array_filter(explode(',', get_field($fname)));
     if( !empty($acf_mc_attachment_ids) and count($acf_mc_attachment_ids) > 0 ){
         $data = get_posts(array(
