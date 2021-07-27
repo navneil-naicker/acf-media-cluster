@@ -177,11 +177,11 @@ add_action('wp_ajax_acf_mc_cluster_edit_save_field', 'acf_mc_cluster_edit_save_f
 
 function acf_media_cluster($post_id, $field_name){
 	global $wpdb;
-	$field_key = get_field('_' . esc_attr($field_name));
+	$field_key = get_field('_' . sanitize_text_field($field_name));
 	$option = json_decode(get_option('acf_mc_key_' . $field_key));
 	$meta_attachment_ids = array_filter(explode(',', get_field($field_name, preg_replace('/\D/', '', $post_id))));
 	$posts = get_posts(array(
-		'post__in' => esc_attr($meta_attachment_ids),
+		'post__in' => sanitize_text_field($meta_attachment_ids),
 		'post_type' => 'attachment',
 		'orderby' => 'post__in',
 		'order' => 'ASC',
