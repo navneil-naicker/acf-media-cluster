@@ -139,9 +139,9 @@ function acf_mc_cluster_edit_save_field(){
 		$acf_mc_key = preg_replace('/[^a-z0-9_]/', '', $_POST['acf-mc-field-key']);
 		foreach($tables as $a => $b){
 			if( !empty($t[$b]) ){
-				array_push($t[esc_attr($b)], esc_attr($a));
+				array_push($t[sanitize_text_field($b)], sanitize_text_field($a));
 			} else {
-				$t[esc_attr($b)] = array($a);
+				$t[sanitize_text_field($b)] = array($a);
 			}
 		}
 		if( !empty($t) ){
@@ -206,7 +206,7 @@ function acf_media_cluster($post_id, $field_name){
 			} else if( $a == "postmeta" ){
 				foreach($meta_attachment_ids as $d){
 					foreach($b as $f => $g){
-						$postmeta_tmp[$d] = array($g => get_field($g, $d));
+						$postmeta_tmp[sanitize_text_field($d)] = array($g => get_field(sanitize_text_field($g), sanitize_text_field($d)));
 					}
 				}
 			}
@@ -215,7 +215,7 @@ function acf_media_cluster($post_id, $field_name){
 		foreach($post_tmp as $a => $b){
 			array_push($data, $b);
 			foreach($postmeta_tmp[$a] as $c => $d){
-				$data[$i]->$c = $d;
+				$data[$i]->$c = sanitize_text_field($d);
 			}
 			$i++;
 		}
