@@ -3,8 +3,8 @@
     // exit if accessed directly
     if( ! defined( 'ABSPATH' ) ) exit;
 
-    $key = $field['key'];
-    $fname = $field['_name'];
+    $key = preg_replace('/[^a-z0-9_]/', '', $field['key']);
+    $fname = preg_replace('/[^a-z0-9_]/', '', $field['_name']);
     $acf_mc_attachment_ids = array_filter(explode(',', get_field($fname)));
     if( !empty($acf_mc_attachment_ids) and count($acf_mc_attachment_ids) > 0 ){
         $data = get_posts(array(
@@ -17,10 +17,10 @@
         $data = array();
     }
 ?>
-<div class="acf-mc-<?php echo $key; ?>" data-minimum="<?php echo $minimum; ?>" data-maximum="<?php echo $maximum; ?>">
-    <input type="hidden" name="acf-mc-fields[<?php echo $fname; ?>][]" value="0"/>
-    <input type="hidden" name="acf-mc-field-key" value="<?php echo $key; ?>"/>
-    <input type="hidden" name="acf-mc-field-name" value="<?php echo $fname; ?>"/>
+<div class="acf-mc-<?php echo preg_replace('/[^a-z0-9_]/', '', $key); ?>">
+    <input type="hidden" name="acf-mc-fields[<?php echo preg_replace('/[^a-z0-9_]/', '', $fname); ?>][]" value="0"/>
+    <input type="hidden" name="acf-mc-field-key" value="<?php echo preg_replace('/[^a-z0-9_]/', '', $key); ?>"/>
+    <input type="hidden" name="acf-mc-field-name" value="<?php echo preg_replace('/[^a-z0-9_]/', '', $fname); ?>"/>
     <div class="acf-mc-field-group acf-mc-field-group-label">
         <div class="acf-mc-field-column acf-mc-field-column-filename"><label>Filename</label></div>
         <div class="acf-mc-field-column acf-mc-field-column-title"><label>Title</label></div>
