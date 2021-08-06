@@ -175,16 +175,20 @@ function acf_mc_cluster_edit_save_field(){
 }
 add_action('wp_ajax_acf_mc_cluster_edit_save_field', 'acf_mc_cluster_edit_save_field');
 
-function acf_media_cluster($post_id, $field_name){
+function acf_media_cluster($field_name, $post_id = null, $args = array()){
 	global $wpdb;
+	$post_id = $post_id>0?$post_id:get_the_ID();
+	$field_name = sanitize_text_field($field_name);
+	$orderby = !empty($args['orderby'])?sanitize_text_field($args['orderby']):'post__in';
+	$order = !empty($args['order'])?sanitize_text_field($args['order']):'ASC';
 	$field_key = get_field('_' . sanitize_text_field($field_name));
 	$option = json_decode(get_option('acf_mc_key_' . $field_key));
 	$meta_attachment_ids = array_filter(explode(',', get_field($field_name, preg_replace('/\D/', '', $post_id))));
 	$posts = get_posts(array(
 		'post__in' => sanitize_text_field($meta_attachment_ids),
 		'post_type' => 'attachment',
-		'orderby' => 'post__in',
-		'order' => 'ASC',
+		'orderby' => $orderby,
+		'order' => $order
 	));
 	$data = array();
 	if( !empty($option) ){
@@ -222,3 +226,90 @@ function acf_media_cluster($post_id, $field_name){
 		return $data;
 	}
 }
+
+function acf_mc_do_shortcodes($args, $post_id = null){
+	$field_name = sanitize_text_field($args['field_name']);
+	$post_id = $post_id>0?$post_id:get_the_ID();
+	$container_id = (!empty($args['container_id']))? 'id="' . $args['container_id'] . '"':null;
+	$container_class = (!empty($args['container_class']))? 'class="acf-mc-sc-output ' . $args['container_class'] . '"':'class="acf-mc-sc-output"';
+	$skin = (!empty($args['skin']))?$args['skin']:null;
+	$response = acf_media_cluster($field_name, $post_id);
+	if( !empty($response) and count($response) > 0 ){
+		echo '<div ' . $container_class . ' ' . $container_id . '>';
+		echo '<table>';
+		echo '<thead class="acf-mc-sc-output-row">';
+		echo '<th class="acf-mc-sc-output-title">Title</th>';
+		echo '<th class="acf-mc-sc-output-caption">Caption</th>';
+		echo '<th class="acf-mc-sc-output-download">Action</th>';
+		echo '</thead>';
+		foreach($response as $item){
+			$post_content = $item->post_content;
+			$post_title = $item->post_title;
+			$post_excerpt = $item->post_excerpt;
+			$post_media_url = $item->post_media_url;
+			echo '<tr class="acf-mc-sc-output-row">';
+			echo '<td class="acf-mc-sc-output-title">' . $post_title . '</td>';
+			echo '<td class="acf-mc-sc-output-caption">' . $post_excerpt . '</td>';
+			echo '<td class="acf-mc-sc-output-download"><a target="_blank" href="' . $post_media_url . '">Download</a></td>';
+			echo '</tr>';
+		}
+		echo '</table>';
+		echo '</div>';
+		if( $skin == "yes" ){
+			add_action('wp_footer', 'acf_mc_sc_scripts');
+		}
+	}
+}
+
+add_action( 'init', 'acf_mc_register_shortcodes');
+function acf_mc_register_shortcodes(){
+	add_shortcode('acf-media-cluster', 'acf_mc_do_shortcodes');
+}
+
+function acf_mc_sc_scripts(){
+?>
+	<style type="text/css">
+		.acf-mc-sc-output{
+			margin-left: auto;
+			width: 1170px;
+			margin-right: auto;
+		}
+		.acf-mc-sc-output table{
+			width: 100%;
+			border-spacing: 0;
+			border-collapse: collapse;
+		}
+		.acf-mc-sc-output table th{
+			background: #f5f5f5;
+		}
+		.acf-mc-sc-output table th,
+		.acf-mc-sc-output table tr td{
+			border: 1px solid #ddd;
+			padding: 8px;
+			line-height: 1.42857143;
+			text-align: left;
+			vertical-align: top;
+			border-top: 1px solid #ddd;
+		}
+		.acf-mc-sc-output table .acf-mc-sc-output-title,
+		.acf-mc-sc-output table .acf-mc-sc-output-caption{
+			width: 40%;
+		}
+		.acf-mc-sc-output table td.acf-mc-sc-output-download a{
+			color: #fff;
+			background-color: #337ab7;
+			border-color: #2e6da4;
+			padding: 6px 12px;
+			text-decoration: none;
+		}
+		.acf-mc-sc-output table td.acf-mc-sc-output-download a:hover{
+			color: #fff;
+			background-color: #286090;
+			border-color: #204d74;
+		}
+		.acf-mc-sc-output table td.acf-mc-sc-output-download{
+			width: 1%;
+		}
+	</style>
+<?php
+ }
