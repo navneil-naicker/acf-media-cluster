@@ -1,5 +1,5 @@
 === ACF Media Cluster ===
-Contributors: Navneil Naicker
+Contributors: navzme
 Tags: acf, media, word, pdf, images, documents
 Requires at least: 3.6.0
 Tested up to: 5.8
