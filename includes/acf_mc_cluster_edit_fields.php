@@ -3,7 +3,7 @@
     // exit if accessed directly
     if( ! defined( 'ABSPATH' ) ) exit;
 
-	if( empty($_GET['post_id']) or empty($_GET['attachment_id']) or empty($_GET['acf-mc-key']) or empty($_GET['acf-mc-name']) ) return;
+	if( empty($_GET['attachment_id']) or empty($_GET['acf-mc-key']) or empty($_GET['acf-mc-name']) ) return;
 
 	$post_id = preg_replace('/\D/', '', $_GET['post_id']);
     $acf_mc_key = preg_replace('/[^a-z0-9_]/', '', $_GET['acf-mc-key']);

@@ -44,7 +44,7 @@
 			href="#"
 			title="Edit"
 			class="button button-edit <?php echo ($showEditDel == true)?:'acf-mc-field-hide'; ?>"
-			data-post_id="<?php echo preg_replace('/[^0-9]/', '', $_GET['post']); ?>"
+			data-attachment_id="<?php echo preg_replace('/[^0-9]/', '', $attachment_id); ?>"
 			data-key="<?php echo preg_replace('/[^a-z0-9_]/', '', $key); ?>"
 			data-name="<?php echo preg_replace('/[^a-z0-9_]/', '', $fname); ?>" >
 			<span class="dashicons dashicons-edit"></span>

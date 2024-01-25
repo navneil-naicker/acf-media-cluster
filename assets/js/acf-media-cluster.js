@@ -112,11 +112,11 @@
 		var key, name, post_id;
 		key = $(this).attr('data-key');
 		name = $(this).attr('data-name');
-		post_id = $(this).attr('data-post_id');
+		attachment_id = $(this).attr('data-attachment_id');
 		document.body.style.overflow = "hidden";
 		$('body').append('<div class="acf-mc-backdrop"></div>');
 		$('body').append('<div class="acf-mc-modal-cotaniner"><div class="acf-mc-modal-cotaniner-loading">Loading...</div></div>');
-		$.get(ajaxurl + "?action=acf_mc_cluster_edit_fields&post_id=" + post_id + "&attachment_id=14&acf-mc-key=" + key + "&acf-mc-name=" + name, function(data){
+		$.get(ajaxurl + "?action=acf_mc_cluster_edit_fields&attachment_id=" + attachment_id + "&acf-mc-key=" + key + "&acf-mc-name=" + name, function(data){
 			$('.acf-mc-modal-cotaniner').html(data);
 		});
 		return false;
@@ -131,11 +131,14 @@
 
 	$(document).on('submit', '.acf-mc-modal-cotaniner .acf-mc-modal-cotaniner-content form', function(){
 		var form = $(this).serializeArray();
+		console.log(form)
 		var button = $('.acf-mc-modal-cotaniner .acf-mc-modal-cotaniner-content form .button-primary');
 		button.html("Saving").attr("disabled", true);
 		$.post(ajaxurl, form, function(data){
-			console.log(data);
 			button.html("Save Changes").attr("disabled", false);
+			document.body.style.overflow = "auto";
+			$(".acf-mc-backdrop").remove();
+			$(".acf-mc-modal-cotaniner").remove();	
 		});
 		return false;
 	});
