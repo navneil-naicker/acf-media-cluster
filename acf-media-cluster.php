@@ -3,7 +3,7 @@
 /*
 Plugin Name: ACF Media Cluster
 Description: An extension for Advance Custom Fields which provides the ability to add multiple media into a post.
-Version: 1.0.0
+Version: 2.0.0
 Author: Navneil Naicker
 Author URI: http://www.navz.me/
 License: GPLv2 or later
@@ -44,7 +44,7 @@ class acf_media_cluster {
 		// settings
 		// - these will be passed into the field class.
 		$this->settings = array(
-			'version'	=> '1.0.0',
+			'version'	=> '2.0.0',
 			'url'		=> plugin_dir_url( __FILE__ ),
 			'path'		=> plugin_dir_path( __FILE__ )
 		);	
@@ -98,20 +98,21 @@ new acf_media_cluster();
 endif;
 
 function acf_mc_save_fields( $post_id ) {
-	$fields = (!empty($_POST['acf-mc-fields']))?$_POST['acf-mc-fields']:null;
-	if( !empty($fields) and count($fields) ){
-		update_post_meta( $post_id, '_' . sanitize_text_field($_POST['acf-mc-field-name']), sanitize_text_field($_POST['acf-mc-field-key']));
+	$fields = (!empty($_POST['acf-mc-fields'])) ? $_POST['acf-mc-fields'] : null;
+	//var_dump($fields); die();
+	if(!empty($fields) and count($fields)){
+		update_post_meta($post_id, '_' . sanitize_text_field($_POST['acf-mc-field-name']), sanitize_text_field($_POST['acf-mc-field-key']));
 		foreach($fields as $field_name => $ids){
 			if( count($ids) === 1 and $ids[0] < 1){
 				delete_post_meta( $post_id, $field_name );
-			} else if( count($ids) > 1 ){
+			} else if(count($ids) > 1){
 				$idx = array();
 				foreach($ids as $id){
 					if( $id > 0 ){
 						$idx[] = preg_replace('/\D/', '', $id);
 					}
 				}
-				update_post_meta( $post_id, $field_name, implode(',', $idx));
+				update_post_meta($post_id, $field_name, implode(',', $idx));
 			}
 		}	
 	}
@@ -119,7 +120,7 @@ function acf_mc_save_fields( $post_id ) {
 }
 add_action( 'save_post', 'acf_mc_save_fields' );
 
-function acf_mc_cluster_field_group($noajax = false, $attachment_id = 0, $fname = "", $pkey = "", $url = "", $title = "", $showEditDel = false, $showAdd = true, $groupIndex = 0){
+function acf_mc_cluster_field_group($noajax = false, $attachment_id = 0, $fname = "", $pkey = "", $showEditDel = false, $showAdd = true, $groupIndex = 0){
 	include( dirname(__FILE__) . '/includes/acf_mc_cluster_field_group.php' );
 }
 add_action('wp_ajax_acf_mc_cluster_field_group', 'acf_mc_cluster_field_group');

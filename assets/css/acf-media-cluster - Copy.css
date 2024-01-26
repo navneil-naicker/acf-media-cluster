@@ -1,9 +1,27 @@
+.acf-field-media-cluster .acf-input .acf-mc-field-group-label{
+    background: #F1F1F1;
+    padding: 5px;
+}
+
+.acf-field-media-cluster .acf-input .acf-mc-field-group{
+    display: inline-block;
+    width: 99%;
+    vertical-align: top;
+    padding: 5px;
+}
+
 .acf-field-media-cluster .acf-input .acf-mc-field-group .acf-mc-field-column {
     position: relative;
 }
 
 .acf-field-media-cluster .acf-input .acf-mc-field-group .acf-mc-field-column input{
     width: 100%;
+    vertical-align: top;
+}
+
+.acf-field-media-cluster .acf-input .acf-mc-field-group .acf-mc-field-column-filename{
+    display: inline-block;
+    width: 35%;
     vertical-align: top;
 }
 
@@ -14,8 +32,15 @@
     vertical-align: middle;
 }
 
+.acf-field-media-cluster .acf-input .acf-mc-field-group .acf-mc-field-column-title{
+    display: inline-block;
+    width: 45%;
+    vertical-align: top;
+}
+
 .acf-field-media-cluster .acf-input .acf-mc-field-group .acf-mc-field-column-action{
     display: inline-block;
+    width: 19%;
     vertical-align: top;
 }
 
@@ -24,7 +49,7 @@
 .acf-field-media-cluster .acf-input .acf-mc-field-group .dashicons-edit,
 .acf-field-media-cluster .acf-input .acf-mc-field-group .dashicons-trash,
 .acf-field-media-cluster .acf-input .acf-mc-field-group .dashicons-plus{
-    vertical-align: sub;
+    vertical-align: middle;
 }
 
 .acf-mc-field-hide{
@@ -88,31 +113,27 @@
     resize: none;
 }
 
-.acf-mc-container {
+
+
+
+.flex-container {
     width: 100%;
-    display: flex;
+    display:flex;
 }
 
-.acf-mc-container.header > div {
+.flex-container.header > div {
     background: #f6f7f7;
+    font-weight: bold;
     color: #1d2327;
     font-weight: 600;
 }
 
-.acf-mc-container > div {
+.flex-container > div {
     width: calc(100% / 3);
     padding: 6px 12px;
     border: 1px solid #c3c4c7;
-    border-bottom: none;
-    border-right: none;
-    width: 40%;
 }
 
-.acf-field-media-cluster .acf-mc-container > div:last-child {
-    border-right: 1px solid #c3c4c7;
-    width: 26%;
-}
-
-.acf-field-media-cluster .acf-mc-field-group-container .acf-mc-container:last-child {
-    border-bottom: 1px solid #c3c4c7;
+.flex-container:last-child > div {
+    border-top: none;
 }

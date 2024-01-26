@@ -63,65 +63,69 @@
 	
 	}
 
-	$(document).on('click', '.button-choose-file', function(){
+	$(document).on('click', '.acf-mc-field-group .button-choose-file', function(){
 		var media, key, name, group;
 		key = $(this).attr('data-key');
 		group = $(this).attr('data-group');
 		name = $(this).attr('data-name');
-		console.log(name);
 		if (media){
 			media.open(); return;
 		}
 		media = wp.media.frames.file_frame = wp.media({
 			title: 'Choose',
 			button: {
-			text: 'Choose'
-		}, multiple: false });
+				text: 'Choose'
+			},
+			multiple: false
+		});
 		media.on('select', function() {
 			attachment = media.state().get('selection').first().toJSON();
-			$(".acf-mc-" + key + " .acf-mc-field-group-container ." + group + ' .acf-mc-field-column-filename .acf-mc-field-file-viewer').attr('href', attachment.url);
-			$(".acf-mc-" + key + " .acf-mc-field-group-container ." + group + ' .acf-mc-field-column-filename input[name="filename"]').val(attachment.filename);
-			$(".acf-mc-" + key + " .acf-mc-field-group-container ." + group + ' .acf-mc-field-column-title input[name="title"]').val(attachment.title);
-			$(".acf-mc-" + key + " .acf-mc-field-group-container ." + group + ' .acf-mc-field-column-action').prepend('<input type="hidden" name="acf-mc-fields[' + name + '][]" value="' + attachment.id + '"/>');
-			$(".acf-mc-" + key + " .acf-mc-field-group-container ." + group + ' .acf-mc-field-column-action .button-edit').removeClass("acf-mc-field-hide");
-			$(".acf-mc-" + key + " .acf-mc-field-group-container ." + group + ' .acf-mc-field-column-action .button-delete').removeClass("acf-mc-field-hide");
+			$(".acf-mc-" + key + " .acf-mc-field-group-" + group + ' .acf-mc-field-column-filename input[name="filename"]').val(attachment.filename);
+			$(".acf-mc-" + key + " .acf-mc-field-group-" + group + ' .acf-mc-field-column-title input[name="title"]').val(attachment.title);
+			$(".acf-mc-" + key + " .acf-mc-field-group-" + group + ' .acf-mc-field-column-action').prepend('<input type="hidden" name="acf-mc-fields[' + name + '][]" value="' + attachment.id + '"/>');
+			$(".acf-mc-" + key + " .acf-mc-field-group-" + group + ' .acf-mc-field-column-action .button-edit').removeClass("acf-mc-field-hide");
+			$(".acf-mc-" + key + " .acf-mc-field-group-" + group + ' .acf-mc-field-column-action .button-delete').removeClass("acf-mc-field-hide");
 		});
 		media.open();
 	});
 
-	$(document).on('click', '.acf-mc-field-group-row .button-plus', function(){
+	$(document).on('click', '.acf-mc-field-group .button-plus', function(){
 		var key = $(this).attr('data-key');
 		var group = $(this).attr('data-group');
 		var groupIndex = $(".acf-mc-" + key + ' .acf-mc-field-group-row').length + 1;
 		var name = $(this).attr('data-name');
-		$(".acf-mc-" + key + " .acf-mc-field-group-container ." + group + ' .acf-mc-field-column-action .button-plus').hide();
+		console.log(key);
+		console.log(group);
+		$(".acf-mc-" + key + " .acf-mc-field-group ." + group + ' .acf-mc-field-column-action .button-plus').hide();
 		$.get(ajaxurl + '?action=acf_mc_cluster_field_group&noajax=true&fname=' + name + '&key=' + key + '&group=' + groupIndex, function(data){
 			$(".acf-mc-" + key + " .acf-mc-field-group-container").append(data);
 		});
 		return false;
 	});
 
-	$(document).on('click', '.acf-mc-field-group-row .button-delete', function(){
+	$(document).on('click', '.acf-mc-field-group .button-delete', function(){
 		var key = $(this).attr('data-key');
 		var group = $(this).attr('data-group');
-		$(".acf-mc-" + key + " .acf-mc-field-group-container ." + group).remove();
+		$(".acf-mc-" + key + " .acf-mc-field-group-" + group).remove();
 		return false;
 	});
 
-	$(document).on('click', '.acf-mc-field-group-row .button-edit', function(){
+	$(document).on('click', '.acf-mc-field-group .button-edit', function(){
 		var key, name, post_id;
 		key = $(this).attr('data-key');
 		name = $(this).attr('data-name');
-		post_id = $(this).attr('data-post_id');
+		attachment_id = $(this).attr('data-attachment_id');
+		document.body.style.overflow = "hidden";
 		$('body').append('<div class="acf-mc-backdrop"></div>');
 		$('body').append('<div class="acf-mc-modal-cotaniner"><div class="acf-mc-modal-cotaniner-loading">Loading...</div></div>');
-		$.get(ajaxurl + "?action=acf_mc_cluster_edit_fields&post_id=" + post_id + "&attachment_id=14&acf-mc-key=" + key + "&acf-mc-name=" + name, function(data){
+		$.get(ajaxurl + "?action=acf_mc_cluster_edit_fields&attachment_id=" + attachment_id + "&acf-mc-key=" + key + "&acf-mc-name=" + name, function(data){
 			$('.acf-mc-modal-cotaniner').html(data);
 		});
 		return false;
 	});
 
 	$(document).on('click', '.acf-mc_modal-close', function(){
+		document.body.style.overflow = "auto";
 		$(".acf-mc-backdrop").remove();
 		$(".acf-mc-modal-cotaniner").remove();
 		return false;
@@ -129,11 +133,14 @@
 
 	$(document).on('submit', '.acf-mc-modal-cotaniner .acf-mc-modal-cotaniner-content form', function(){
 		var form = $(this).serializeArray();
+		console.log(form)
 		var button = $('.acf-mc-modal-cotaniner .acf-mc-modal-cotaniner-content form .button-primary');
 		button.html("Saving").attr("disabled", true);
 		$.post(ajaxurl, form, function(data){
-			console.log(data);
 			button.html("Save Changes").attr("disabled", false);
+			document.body.style.overflow = "auto";
+			$(".acf-mc-backdrop").remove();
+			$(".acf-mc-modal-cotaniner").remove();	
 		});
 		return false;
 	});
