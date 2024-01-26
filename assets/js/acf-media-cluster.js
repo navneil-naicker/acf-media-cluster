@@ -63,7 +63,7 @@
 	
 	}
 
-	$(document).on('click', '.button-choose-file', function(){
+	$(document).on('click', '.acf-mc-field-group .button-choose-file', function(){
 		var media, key, name, group;
 		key = $(this).attr('data-key');
 		group = $(this).attr('data-group');
@@ -89,12 +89,14 @@
 		media.open();
 	});
 
-	$(document).on('click', '.acf-mc-field-group-row .button-plus', function(){
+	$(document).on('click', '.acf-mc-field-group .button-plus', function(){
 		var key = $(this).attr('data-key');
 		var group = $(this).attr('data-group');
 		var groupIndex = $(".acf-mc-" + key + ' .acf-mc-field-group-row').length + 1;
 		var name = $(this).attr('data-name');
-		$(".acf-mc-" + key + " .acf-mc-field-group-container ." + group + ' .acf-mc-field-column-action .button-plus').hide();
+		console.log(key);
+		console.log(group);
+		$(".acf-mc-" + key + " .acf-mc-field-group ." + group + ' .acf-mc-field-column-action .button-plus').hide();
 		$.get(ajaxurl + '?action=acf_mc_cluster_field_group&noajax=true&fname=' + name + '&key=' + key + '&group=' + groupIndex, function(data){
 			$(".acf-mc-" + key + " .acf-mc-field-group-container").append(data);
 		});

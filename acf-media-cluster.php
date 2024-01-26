@@ -3,7 +3,7 @@
 /*
 Plugin Name: ACF Media Cluster
 Description: An extension for Advance Custom Fields which provides the ability to add multiple media into a post.
-Version: 1.0.1
+Version: 2.0.0
 Author: Navneil Naicker
 Author URI: http://www.navz.me/
 License: GPLv2 or later
@@ -44,7 +44,7 @@ class acf_media_cluster {
 		// settings
 		// - these will be passed into the field class.
 		$this->settings = array(
-			'version'	=> '1.0.0',
+			'version'	=> '2.0.0',
 			'url'		=> plugin_dir_url( __FILE__ ),
 			'path'		=> plugin_dir_path( __FILE__ )
 		);	
